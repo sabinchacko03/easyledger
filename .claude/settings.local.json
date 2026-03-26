@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer:*)",
+      "Bash(which php:*)",
+      "Bash(cd \"D:/Receipt App/Code/api\" && php artisan vendor:publish --provider=\"Laravel\\\\Sanctum\\\\SanctumServiceProvider\" --ansi 2>&1 && php artisan vendor:publish --provider=\"Spatie\\\\Permission\\\\PermissionServiceProvider\" --ansi 2>&1)",
+      "Bash(cd \"D:/Receipt App/Code/api\" && php artisan route:list --path=api 2>&1)",
+      "Bash(cd \"D:/Receipt App/Code/api\" && php artisan sail:install --with=mysql 2>&1)",
+      "Bash(node --version && npx --version 2>&1)",
+      "Bash(npx create-expo-app@latest:*)",
+      "Bash(cd \"D:/Receipt App/Code/mobile\" && npm install @tanstack/react-query@^5 @react-native-community/netinfo expo-sqlite expo-camera expo-location @react-native-async-storage/async-storage i18next react-i18next nativewind@^4 tailwindcss@^3 2>&1)",
+      "Bash(cd \"D:/Receipt App/Code/mobile\" && npm install uuid react-native-get-random-values && npm install --save-dev @types/uuid 2>&1)",
+      "Bash(cd \"D:/Receipt App/Code/api\" && php artisan vendor:publish --tag=dompdf --ansi 2>&1)",
+      "Bash(cd \"D:/Receipt App/Code/api\" && php artisan vendor:publish --provider=\"Barryvdh\\\\DomPDF\\\\ServiceProvider\" --ansi 2>&1)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+Laravel API
+
+  Base URL: http://localhost (port 80)
+
+  Test it's running:
+  http://localhost/api/health
+  or just hit any API endpoint like http://localhost/api in a browser or Postman.
+
+  ---
+  MySQL Database
+
+  Connect with any DB client (TablePlus, DBeaver, MySQL Workbench):
+
+  ┌──────────┬─────────────┐
+  │  Field   │    Value    │
+  ├──────────┼─────────────┤
+  │ Host     │ 127.0.0.1   │
+  ├──────────┼─────────────┤
+  │ Port     │ 3306        │
+  ├──────────┼─────────────┤
+  │ Database │ receipt_app │
+  ├──────────┼─────────────┤
+  │ Username │ sail        │
+  ├──────────┼─────────────┤
+  │ Password │ password    │
+  └──────────┴─────────────┘
+
+  Or via Sail CLI:
+  ./vendor/bin/sail mysql
+
+  ---
+  Mailpit (Email Testing)
+
+  Web UI: http://localhost:8025
+
+  All emails sent by the app (receipt PDFs etc.) appear here instead of being delivered to real inboxes.
+
+  ---
+  First-time Setup
+
+  If you haven't run migrations yet:
+  ./vendor/bin/sail artisan migrate
+  # or with seed data:
+  ./vendor/bin/sail artisan migrate:fresh --seed
+
+  To run the queue worker (needed for email/PDF jobs):
+  ./vendor/bin/sail artisan queue:listen
