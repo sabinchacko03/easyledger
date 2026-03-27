@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Documents
     Route::get('/documents', [DocumentController::class, 'index']);
+    Route::get('/documents/daily-stats', [DocumentController::class, 'dailyStats']);
     Route::get('/documents/{document}', [DocumentController::class, 'show']);
     Route::get('/documents/{document}/pdf', [PdfController::class, 'download']);
 

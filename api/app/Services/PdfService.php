@@ -11,7 +11,7 @@ class PdfService
 {
     public function generate(Document $document): string
     {
-        $document->loadMissing(['tenant', 'customer', 'salesperson.salespersonProfile']);
+        $document->loadMissing(['tenant', 'customer', 'salesperson.salespersonProfile', 'parent']);
 
         // Pre-process Arabic text for correct glyph shaping
         $arText = $this->reshapeArabic($document->amount_words_ar ?? '');

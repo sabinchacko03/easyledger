@@ -142,6 +142,14 @@
     </table>
   </div>
 
+  {{-- PARENT RECEIPT (credit notes only) --}}
+  @if($isCredit && $document->parent)
+    <div style="background:#f5f3ff; border:1px solid #c4b5fd; border-radius:3px; padding:8px 12px; margin-bottom:14px;">
+      <span style="font-size:8px; text-transform:uppercase; letter-spacing:0.5px; color:#7c3aed; font-weight:bold;">Ref. Receipt</span>
+      <span style="font-size:11px; font-weight:bold; color:#4c1d95; margin-left:8px;">{{ $document->parent->doc_number }}</span>
+    </div>
+  @endif
+
   {{-- PARTIES --}}
   <table class="two-col" style="margin-bottom:14px;">
     <tr>

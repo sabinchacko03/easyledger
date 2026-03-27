@@ -31,7 +31,13 @@
       "Bash(cmd /c \"netsh advfirewall firewall show rule name=all dir=in | grep -i \\\\\"port 80\\\\|:80\\\\\"\")",
       "Bash(curl -v http://localhost/api)",
       "Bash(curl:*)",
-      "Bash(./vendor/bin/sail artisan:*)"
+      "Bash(./vendor/bin/sail artisan:*)",
+      "Bash(node -e \"const p=require\\(''./package.json''\\); console.log\\(JSON.stringify\\({uuid: p.dependencies?.uuid, rngv: p.dependencies?.[''react-native-get-random-values'']}, null, 2\\)\\)\")",
+      "Bash(node -e \"const p=require\\(''./package.json''\\); console.log\\(JSON.stringify\\({location: p.dependencies?.[''expo-location''], imagePicker: p.dependencies?.[''expo-image-picker'']}, null, 2\\)\\)\")",
+      "Bash(node -e \"const p=require\\(''./package.json''\\); const deps = {...p.dependencies, ...p.devDependencies}; Object.keys\\(deps\\).filter\\(k=>k.includes\\(''expo-''\\)\\).forEach\\(k=>console.log\\(k, deps[k]\\)\\)\")",
+      "Bash(node -e \"const p=require\\(''./package.json''\\); console.log\\(''uuid version:'', p.dependencies.uuid\\)\")",
+      "Bash(node -e \"const {v4} = require\\(''''uuid''''\\); console.log\\(v4\\(\\)\\)\")",
+      "Bash(node:*)"
     ]
   }
 }

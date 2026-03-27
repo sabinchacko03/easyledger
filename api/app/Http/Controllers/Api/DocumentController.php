@@ -20,7 +20,7 @@ class DocumentController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $documents = Document::with(['customer', 'salesperson'])
+        $documents = Document::with(['customer', 'salesperson', 'parent:id,doc_number'])
             ->orderByDesc('created_at')
             ->paginate(20);
 
@@ -35,7 +35,7 @@ class DocumentController extends Controller
             'parent_id' => ['required_if:type,381', 'nullable', 'integer', 'exists:documents,id'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'description' => ['nullable', 'string'],
-            'payment_mode' => ['nullable', 'in:Cash,Cheque,Bank Transfer'],
+            'payment_mode' => ['nullable', 'in:Cash,Cheque,Bank Transfer,Credit'],
             'gps_lat' => ['nullable', 'numeric', 'between:-90,90'],
             'gps_long' => ['nullable', 'numeric', 'between:-180,180'],
             'evidence_image' => ['nullable', 'file', 'image', 'max:5120'],
@@ -75,6 +75,25 @@ class DocumentController extends Controller
         SendReceiptEmail::dispatch($document)->onQueue('emails');
 
         return response()->json($document->load('customer', 'salesperson'), 201);
+    }
+
+    public function dailyStats(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $stats = Document::selectRaw(
+            'DATE(created_at) as date,
+             SUM(CASE WHEN type = "380" THEN 1 ELSE 0 END) as receipt_count,
+             SUM(CASE WHEN type = "381" THEN 1 ELSE 0 END) as credit_note_count,
+             SUM(CASE WHEN type = "380" THEN amount ELSE 0 END) as total_amount'
+        )
+            ->where('salesperson_id', $user->id)
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupByRaw('DATE(created_at)')
+            ->orderByDesc('date')
+            ->get();
+
+        return response()->json($stats);
     }
 
     public function show(Document $document): JsonResponse
