@@ -13,10 +13,12 @@ return new class extends Migration
             $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete();
             $table->string('name');
             $table->string('trn', 15)->nullable();
+            $table->string('tin', 10)->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->text('address')->nullable();
             $table->decimal('current_balance', 15, 2)->default(0);
+            $table->string('trade_license_path')->nullable();
             $table->timestamps();
         });
     }

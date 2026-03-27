@@ -15,7 +15,23 @@
       "Bash(mkdir:*)",
       "Bash(ls:*)",
       "Bash(npm install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(xargs grep:*)",
+      "Bash(php artisan:*)",
+      "Bash(find D:/ReceiptApp/Code/mobile/src -name auth*)",
+      "Bash(ipconfig)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://192.168.1.199/api/health)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://192.168.1.199)",
+      "Bash(netstat -ano)",
+      "Bash(tasklist:*)",
+      "Bash(cmd /c \"tasklist /fi \\\\\"PID eq 22468\\\\\"\")",
+      "Bash(cmd /c \"tasklist\")",
+      "Bash(cmd /c \"netstat -ano\")",
+      "Bash(docker ps:*)",
+      "Bash(cmd /c \"netsh advfirewall firewall show rule name=all dir=in | grep -i \\\\\"port 80\\\\|:80\\\\\"\")",
+      "Bash(curl -v http://localhost/api)",
+      "Bash(curl:*)",
+      "Bash(./vendor/bin/sail artisan:*)"
     ]
   }
 }

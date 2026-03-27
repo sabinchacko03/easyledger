@@ -29,21 +29,27 @@ class CustomerController extends Controller
     {
         $request->validate([
             'name'            => 'required|string|max:255',
-            'trn'             => 'nullable|string|max:15',
+            'trn'             => 'required|string|max:15',
+            'tin'             => 'required|string|max:10',
             'phone'           => 'nullable|string|max:20',
             'email'           => 'nullable|email|max:255',
             'address'         => 'nullable|string|max:500',
             'current_balance' => 'nullable|numeric',
+            'trade_license'   => 'required|file|mimes:pdf|max:2048',
         ]);
 
+        $path = $request->file('trade_license')->store('trade-licenses', 'local');
+
         Customer::create([
-            'tenant_id'       => auth()->user()->tenant_id,
-            'name'            => $request->name,
-            'trn'             => $request->trn,
-            'phone'           => $request->phone,
-            'email'           => $request->email,
-            'address'         => $request->address,
-            'current_balance' => $request->current_balance ?? 0,
+            'tenant_id'          => auth()->user()->tenant_id,
+            'name'               => $request->name,
+            'trn'                => $request->trn,
+            'tin'                => $request->tin,
+            'phone'              => $request->phone,
+            'email'              => $request->email,
+            'address'            => $request->address,
+            'current_balance'    => $request->current_balance ?? 0,
+            'trade_license_path' => $path,
         ]);
 
         return redirect()->route('customers.index')
@@ -65,14 +71,22 @@ class CustomerController extends Controller
 
         $request->validate([
             'name'            => 'required|string|max:255',
-            'trn'             => 'nullable|string|max:15',
+            'trn'             => 'required|string|max:15',
+            'tin'             => 'required|string|max:10',
             'phone'           => 'nullable|string|max:20',
             'email'           => 'nullable|email|max:255',
             'address'         => 'nullable|string|max:500',
             'current_balance' => 'nullable|numeric',
+            'trade_license'   => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
-        $customer->update($request->only('name', 'trn', 'phone', 'email', 'address', 'current_balance'));
+        $data = $request->only('name', 'trn', 'tin', 'phone', 'email', 'address', 'current_balance');
+
+        if ($request->hasFile('trade_license')) {
+            $data['trade_license_path'] = $request->file('trade_license')->store('trade-licenses', 'local');
+        }
+
+        $customer->update($data);
 
         return redirect()->route('customers.index')
             ->with('success', 'Customer updated successfully.');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class DocumentController extends Controller
@@ -53,9 +54,9 @@ class DocumentController extends Controller
     {
         abort_if($document->tenant_id !== auth()->user()->tenant_id, 403);
 
-        $pdf = app(PdfService::class)->generate($document);
+        $path = app(PdfService::class)->generate($document);
 
-        return response($pdf, 200, [
+        return response(Storage::get($path), 200, [
             'Content-Type'        => 'application/pdf',
             'Content-Disposition' => "inline; filename=\"{$document->doc_number}.pdf\"",
         ]);

@@ -10,15 +10,17 @@ export default function CreateCustomer() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         trn: '',
+        tin: '',
         phone: '',
         email: '',
         address: '',
         current_balance: '',
+        trade_license: null,
     });
 
     function submit(e) {
         e.preventDefault();
-        post('/customers');
+        post('/customers', { forceFormData: true });
     }
 
     return (
@@ -54,9 +56,14 @@ export default function CreateCustomer() {
                                     {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="trn">TRN <span className="text-muted-foreground font-normal">(optional)</span></Label>
-                                    <Input id="trn" value={data.trn} onChange={(e) => setData('trn', e.target.value)} placeholder="15-digit TRN" maxLength={15} />
+                                    <Label htmlFor="trn">TRN</Label>
+                                    <Input id="trn" value={data.trn} onChange={(e) => setData('trn', e.target.value)} placeholder="15-digit TRN" maxLength={15} required />
                                     {errors.trn && <p className="text-sm text-destructive">{errors.trn}</p>}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="tin">TIN</Label>
+                                    <Input id="tin" value={data.tin} onChange={(e) => setData('tin', e.target.value)} placeholder="10-digit TIN" maxLength={10} required />
+                                    {errors.tin && <p className="text-sm text-destructive">{errors.tin}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="current_balance">Opening Balance (AED)</Label>
@@ -67,6 +74,11 @@ export default function CreateCustomer() {
                                     <Label htmlFor="address">Address</Label>
                                     <Input id="address" value={data.address} onChange={(e) => setData('address', e.target.value)} placeholder="Building, street, area" />
                                     {errors.address && <p className="text-sm text-destructive">{errors.address}</p>}
+                                </div>
+                                <div className="col-span-2 space-y-2">
+                                    <Label htmlFor="trade_license">Trade License (PDF, max 2MB)</Label>
+                                    <Input id="trade_license" type="file" accept=".pdf" onChange={(e) => setData('trade_license', e.target.files[0])} required />
+                                    {errors.trade_license && <p className="text-sm text-destructive">{errors.trade_license}</p>}
                                 </div>
                             </div>
 

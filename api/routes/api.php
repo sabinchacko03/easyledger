@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/documents/{document}/pdf', [PdfController::class, 'download']);
 
     // Salesperson: create & sync documents
-    Route::middleware('role:salesperson|admin,web')->group(function () {
+    Route::middleware('role:salesperson|admin')->group(function () {
         Route::post('/documents', [DocumentController::class, 'store']);
         Route::post('/documents/sync', [DocumentController::class, 'sync']);
     });
@@ -44,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     | Admin-only routes
     |--------------------------------------------------------------------------
     */
-    Route::middleware('role:admin,web')->group(function () {
+    Route::middleware('role:admin')->group(function () {
         // Customer management
         Route::post('/customers', [CustomerController::class, 'store']);
         Route::put('/customers/{customer}', [CustomerController::class, 'update']);

@@ -15,10 +15,12 @@ class Customer extends Model
         'tenant_id',
         'name',
         'trn',
+        'tin',
         'phone',
         'email',
         'address',
         'current_balance',
+        'trade_license_path',
     ];
 
     protected function casts(): array

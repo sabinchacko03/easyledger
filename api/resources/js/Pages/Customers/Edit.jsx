@@ -7,18 +7,21 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function EditCustomer({ customer }) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'PUT',
         name: customer.name ?? '',
         trn: customer.trn ?? '',
+        tin: customer.tin ?? '',
         phone: customer.phone ?? '',
         email: customer.email ?? '',
         address: customer.address ?? '',
         current_balance: customer.current_balance ?? '',
+        trade_license: null,
     });
 
     function submit(e) {
         e.preventDefault();
-        put(`/customers/${customer.id}`);
+        post(`/customers/${customer.id}`, { forceFormData: true });
     }
 
     return (
@@ -59,6 +62,11 @@ export default function EditCustomer({ customer }) {
                                     {errors.trn && <p className="text-sm text-destructive">{errors.trn}</p>}
                                 </div>
                                 <div className="space-y-2">
+                                    <Label htmlFor="tin">TIN</Label>
+                                    <Input id="tin" value={data.tin} onChange={(e) => setData('tin', e.target.value)} maxLength={10} />
+                                    {errors.tin && <p className="text-sm text-destructive">{errors.tin}</p>}
+                                </div>
+                                <div className="space-y-2">
                                     <Label htmlFor="current_balance">Balance (AED)</Label>
                                     <Input id="current_balance" type="number" step="0.01" value={data.current_balance} onChange={(e) => setData('current_balance', e.target.value)} />
                                     {errors.current_balance && <p className="text-sm text-destructive">{errors.current_balance}</p>}
@@ -67,6 +75,14 @@ export default function EditCustomer({ customer }) {
                                     <Label htmlFor="address">Address</Label>
                                     <Input id="address" value={data.address} onChange={(e) => setData('address', e.target.value)} />
                                     {errors.address && <p className="text-sm text-destructive">{errors.address}</p>}
+                                </div>
+                                <div className="col-span-2 space-y-2">
+                                    <Label htmlFor="trade_license">Trade License (PDF, max 2MB)</Label>
+                                    {customer.trade_license_path && (
+                                        <p className="text-sm text-muted-foreground">Current file uploaded. Upload a new PDF to replace it.</p>
+                                    )}
+                                    <Input id="trade_license" type="file" accept=".pdf" onChange={(e) => setData('trade_license', e.target.files[0])} />
+                                    {errors.trade_license && <p className="text-sm text-destructive">{errors.trade_license}</p>}
                                 </div>
                             </div>
 

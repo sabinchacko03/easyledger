@@ -95,7 +95,7 @@ export default function Register() {
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="company_email">Company Email</Label>
-                                            <Input id="company_email" type="email" value={data.company_email} onChange={(e) => setData('company_email', e.target.value)} placeholder="info@company.com" />
+                                            <Input id="company_email" type="email" value={data.company_email} onChange={(e) => setData('company_email', e.target.value)} placeholder="info@company.com" required />
                                             {errors.company_email && <p className="text-sm text-destructive">{errors.company_email}</p>}
                                         </div>
                                         <div className="space-y-2">
@@ -117,13 +117,13 @@ export default function Register() {
                                             {errors.city && <p className="text-sm text-destructive">{errors.city}</p>}
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="trn">TRN <span className="text-muted-foreground font-normal">(optional)</span></Label>
-                                            <Input id="trn" value={data.trn} onChange={(e) => setData('trn', e.target.value)} placeholder="15-digit Tax Reg. No." maxLength={15} />
+                                            <Label htmlFor="trn">TRN</Label>
+                                            <Input id="trn" value={data.trn} onChange={(e) => setData('trn', e.target.value)} placeholder="15-digit Tax Reg. No." maxLength={15} required />
                                             {errors.trn && <p className="text-sm text-destructive">{errors.trn}</p>}
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="tin">TIN <span className="text-muted-foreground font-normal">(optional)</span></Label>
-                                            <Input id="tin" value={data.tin} onChange={(e) => setData('tin', e.target.value)} placeholder="10-digit Tax ID No." maxLength={10} />
+                                            <Label htmlFor="tin">TIN</Label>
+                                            <Input id="tin" value={data.tin} onChange={(e) => setData('tin', e.target.value)} placeholder="10-digit Tax ID No." maxLength={10} required />
                                             {errors.tin && <p className="text-sm text-destructive">{errors.tin}</p>}
                                         </div>
                                         <div className="col-span-2 space-y-2">

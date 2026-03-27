@@ -26,11 +26,9 @@ class PdfService
 
         $pdf->setPaper('A4', 'portrait');
 
-        $pdf->getDomPDF()->getOptions()->set('defaultFont', 'Cairo');
+        $pdf->getDomPDF()->getOptions()->set('defaultFont', 'DejaVu Sans');
         $pdf->getDomPDF()->getOptions()->set('isRemoteEnabled', false);
         $pdf->getDomPDF()->getOptions()->set('isHtml5ParserEnabled', true);
-        $pdf->getDomPDF()->getOptions()->set('fontDir', storage_path('fonts'));
-        $pdf->getDomPDF()->getOptions()->set('fontCache', storage_path('fonts'));
 
         $path = "pdfs/{$document->tenant_id}/{$document->doc_number}.pdf";
 
