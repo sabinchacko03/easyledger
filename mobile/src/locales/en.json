@@ -1,0 +1,66 @@
+{
+  "login": {
+    "title": "Receipt App",
+    "subtitle": "Sign in to continue",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign In",
+    "error": "Invalid email or password."
+  },
+  "nav": {
+    "home": "New Receipt",
+    "customers": "Customers",
+    "history": "History"
+  },
+  "receipt": {
+    "title": "New Receipt",
+    "customer": "Customer",
+    "selectCustomer": "Select a customer",
+    "amount": "Amount (AED)",
+    "description": "Description",
+    "paymentMode": "Payment Mode",
+    "cash": "Cash",
+    "cheque": "Cheque",
+    "bankTransfer": "Bank Transfer",
+    "photo": "Evidence Photo",
+    "takePhoto": "Take Photo",
+    "save": "Save Receipt",
+    "saving": "Saving...",
+    "savedOffline": "Saved offline. Will sync when connected.",
+    "savedOnline": "Receipt saved and sent.",
+    "type": "Type",
+    "receipt": "Receipt",
+    "creditNote": "Credit Note"
+  },
+  "customers": {
+    "title": "Customers",
+    "search": "Search customers...",
+    "balance": "Balance",
+    "noCustomers": "No customers found."
+  },
+  "history": {
+    "title": "History",
+    "noReceipts": "No receipts yet.",
+    "creditNote": "Credit Note"
+  },
+  "creditNote": {
+    "title": "New Credit Note",
+    "for": "Credit Note for",
+    "amount": "Amount (AED)",
+    "description": "Reason / Description",
+    "paymentMode": "Payment Mode",
+    "photo": "Evidence Photo",
+    "takePhoto": "Take Photo",
+    "save": "Issue Credit Note",
+    "savedOnline": "Credit note issued and sent.",
+    "savedOffline": "Saved offline. Will sync when connected."
+  },
+  "common": {
+    "loading": "Loading...",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "offline": "Offline",
+    "syncing": "Syncing..."
+  }
+}
