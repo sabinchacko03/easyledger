@@ -5,16 +5,35 @@
     "email": "Email",
     "password": "Password",
     "submit": "Sign In",
-    "error": "Invalid email or password."
+    "error": "Invalid email or password.",
+    "getStarted": "Get Started — No account needed",
+    "getStartedSub": "Create receipts instantly as a salesperson"
+  },
+  "signup": {
+    "title": "Get Started",
+    "subtitle": "Create receipts instantly — no account needed",
+    "name": "Your Name",
+    "companyName": "Company Name",
+    "companyAddress": "Company Address",
+    "trn": "TRN (Tax Registration Number)",
+    "trnHint": "15 numeric digits — dashes are ignored",
+    "tin": "TIN (Tax Identification Number)",
+    "tinHint": "Exactly 10 numeric digits",
+    "submit": "Start Creating Receipts",
+    "signIn": "Already have an account? Sign in"
   },
   "nav": {
-    "home": "New Receipt",
+    "home": "Home",
     "customers": "Customers",
-    "history": "History"
+    "history": "History",
+    "receipts": "Receipts",
+    "profile": "Profile"
   },
   "receipt": {
     "title": "New Receipt",
     "customer": "Customer",
+    "customerName": "Customer Name",
+    "customerPhone": "Customer Phone",
     "selectCustomer": "Select a customer",
     "amount": "Amount (AED)",
     "description": "Description",
@@ -22,6 +41,7 @@
     "cash": "Cash",
     "cheque": "Cheque",
     "bankTransfer": "Bank Transfer",
+    "credit": "Credit",
     "photo": "Evidence Photo",
     "takePhoto": "Take Photo",
     "save": "Save Receipt",
@@ -54,6 +74,18 @@
     "save": "Issue Credit Note",
     "savedOnline": "Credit note issued and sent.",
     "savedOffline": "Saved offline. Will sync when connected."
+  },
+  "upgrade": {
+    "title": "Upgrade your account",
+    "subtitle": "Add your company email to unlock unlimited receipts",
+    "email": "Company Email",
+    "submit": "Send Activation Link",
+    "sent": "Invitation sent!",
+    "sentDesc": "We've sent an activation link to your email.",
+    "checkStatus": "Check Status",
+    "ready": "Your account is ready!",
+    "signIn": "Sign In Now",
+    "later": "Maybe later"
   },
   "common": {
     "loading": "Loading...",

@@ -4,8 +4,14 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\CustomerController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\DocumentController;
+use App\Http\Controllers\Web\InviteRegistrationController;
 use App\Http\Controllers\Web\SalespersonController;
 use Illuminate\Support\Facades\Route;
+
+// Invite registration (token-gated, no session required)
+Route::get('/invite/{token}', [InviteRegistrationController::class, 'show'])->name('invite.show');
+Route::post('/invite/{token}/register', [InviteRegistrationController::class, 'register'])->name('invite.register');
+Route::get('/invite/{token}/success', [InviteRegistrationController::class, 'success'])->name('invite.success');
 
 // Guest routes
 Route::middleware('guest')->group(function () {

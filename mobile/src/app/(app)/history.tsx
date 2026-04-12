@@ -1,12 +1,10 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,7 +31,6 @@ interface PaginatedResponse {
 }
 
 export default function HistoryScreen() {
-  const router = useRouter();
   const insets = useSafeAreaInsets();
 
   const {
@@ -141,23 +138,6 @@ export default function HistoryScreen() {
                 year: 'numeric',
               })}
             </Text>
-            {item.type === '380' && (
-              <TouchableOpacity
-                className="mt-3 self-start bg-orange-50 border border-orange-200 rounded-lg px-3 py-1.5"
-                onPress={() =>
-                  router.push({
-                    pathname: '/(app)/credit-note',
-                    params: {
-                      parentId: String(item.id),
-                      customerId: String(item.customer_id),
-                      customerName: item.customer?.name ?? '',
-                    },
-                  })
-                }
-              >
-                <Text className="text-xs font-medium text-orange-600">Issue Credit Note</Text>
-              </TouchableOpacity>
-            )}
           </View>
         )}
       />

@@ -41,6 +41,12 @@ class DocumentController extends Controller
             'evidence_image' => ['nullable', 'file', 'image', 'max:5120'],
         ]);
 
+        if ($request->type === '381') {
+            return response()->json([
+                'message' => 'Credit notes are not available at this time.',
+            ], 422);
+        }
+
         $user = $request->user();
         $tenantId = $user->tenant_id;
 
@@ -124,7 +130,12 @@ class DocumentController extends Controller
         $skipped = [];
 
         foreach ($request->documents as $draft) {
-            // Skip already synced UUIDs
+            // Skip credit notes (disabled) and already-synced UUIDs
+            if (($draft['type'] ?? '380') === '381') {
+                $skipped[] = $draft['uuid'];
+                continue;
+            }
+
             if (Document::where('uuid', $draft['uuid'])->exists()) {
                 $skipped[] = $draft['uuid'];
                 continue;

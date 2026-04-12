@@ -5,10 +5,10 @@ import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { api } from '@/lib/api';
-import { useAuth } from '@/lib/auth-context';
+import { useFullUser } from '@/lib/auth-context';
 
 export default function HomeScreen() {
-  const { user } = useAuth();
+  const user = useFullUser();
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -24,7 +24,10 @@ export default function HomeScreen() {
   const todayTotal = todayReceipts.reduce((sum, d) => sum + Number(d.amount), 0);
 
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ paddingHorizontal: 16, paddingTop: insets.top + 16, paddingBottom: 96 }}>
+    <ScrollView
+      className="flex-1 bg-gray-50"
+      contentContainerStyle={{ paddingHorizontal: 16, paddingTop: insets.top + 16, paddingBottom: 96 }}
+    >
       {/* Greeting */}
       <Text className="text-2xl font-bold text-gray-900">
         Hello, {user?.name?.split(' ')[0] ?? 'there'} 👋
@@ -52,28 +55,15 @@ export default function HomeScreen() {
       <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
         Quick Actions
       </Text>
-      <View className="flex-row gap-3 mb-5">
-        <TouchableOpacity
-          className="flex-1 bg-primary rounded-2xl p-5 items-center justify-center"
-          style={{ minHeight: 130 }}
-          onPress={() => router.push('/(app)/new-receipt')}
-          activeOpacity={0.85}
-        >
-          <Text style={{ fontSize: 38 }}>🧾</Text>
-          <Text className="text-white font-bold text-base text-center mt-2">New Receipt</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="flex-1 bg-orange-500 rounded-2xl p-5 items-center justify-center"
-          style={{ minHeight: 130 }}
-          onPress={() => router.push('/(app)/history')}
-          activeOpacity={0.85}
-        >
-          <Text style={{ fontSize: 38 }}>↩️</Text>
-          <Text className="text-white font-bold text-base text-center mt-2">Credit Note</Text>
-          <Text className="text-orange-100 text-xs text-center mt-1">Select a receipt first</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        className="bg-primary rounded-2xl p-5 items-center justify-center mb-5"
+        style={{ minHeight: 120 }}
+        onPress={() => router.push('/(app)/new-receipt')}
+        activeOpacity={0.85}
+      >
+        <Text style={{ fontSize: 38 }}>🧾</Text>
+        <Text className="text-white font-bold text-base text-center mt-2">New Receipt</Text>
+      </TouchableOpacity>
 
       {/* Secondary shortcuts */}
       <View className="gap-3">
@@ -83,7 +73,7 @@ export default function HomeScreen() {
         >
           <View>
             <Text className="font-semibold text-gray-800">History</Text>
-            <Text className="text-xs text-gray-400 mt-0.5">All receipts & credit notes</Text>
+            <Text className="text-xs text-gray-400 mt-0.5">All receipts</Text>
           </View>
           <Text className="text-gray-300 text-xl font-light">›</Text>
         </TouchableOpacity>

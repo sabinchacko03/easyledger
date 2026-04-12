@@ -37,7 +37,13 @@
       "Bash(node -e \"const p=require\\(''./package.json''\\); const deps = {...p.dependencies, ...p.devDependencies}; Object.keys\\(deps\\).filter\\(k=>k.includes\\(''expo-''\\)\\).forEach\\(k=>console.log\\(k, deps[k]\\)\\)\")",
       "Bash(node -e \"const p=require\\(''./package.json''\\); console.log\\(''uuid version:'', p.dependencies.uuid\\)\")",
       "Bash(node -e \"const {v4} = require\\(''''uuid''''\\); console.log\\(v4\\(\\)\\)\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(git -C D:/ReceiptApp/Code ls-files --error-unmatch mobile/)",
+      "Bash(git -C D:/ReceiptApp/Code status mobile/)",
+      "Bash(git -C D:/ReceiptApp/Code submodule status)",
+      "Bash(git -C D:/ReceiptApp/Code ls-files --stage mobile)",
+      "Bash(ls D:/ReceiptApp/Code/mobile/src/app/\\\\\\(easy\\\\\\)/)",
+      "Bash(ls D:/ReceiptApp/Code/mobile/src/app/\\\\\\(auth\\\\\\)/)"
     ]
   }
 }

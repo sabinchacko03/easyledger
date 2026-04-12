@@ -32,8 +32,25 @@ export async function initDb() {
       current_balance REAL DEFAULT 0,
       updated_at  TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS easy_receipts (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      uuid             TEXT    NOT NULL UNIQUE,
+      customer_name    TEXT    NOT NULL,
+      customer_phone   TEXT,
+      amount           REAL    NOT NULL,
+      payment_mode     TEXT,
+      description      TEXT,
+      photo_uri        TEXT,
+      gps_lat          REAL,
+      gps_long         REAL,
+      created_at_local TEXT    NOT NULL,
+      synced           INTEGER NOT NULL DEFAULT 0
+    );
   `);
 }
+
+// ─── Offline drafts (full mode) ────────────────────────────────────────────
 
 export interface OfflineDraft {
   uuid: string;
@@ -85,6 +102,8 @@ export const DraftStore = {
   },
 };
 
+// ─── Customer cache (full mode) ────────────────────────────────────────────
+
 export const CustomerCache = {
   upsertMany: async (customers: any[]) => {
     await db.withTransactionAsync(async () => {
@@ -104,5 +123,72 @@ export const CustomerCache = {
 
   getAll: async () => {
     return db.getAllAsync<any>('SELECT * FROM cached_customers ORDER BY name ASC');
+  },
+};
+
+// ─── Easy receipts (easy mode, local only) ─────────────────────────────────
+
+export interface EasyReceipt {
+  uuid: string;
+  customer_name: string;
+  customer_phone?: string | null;
+  amount: number;
+  payment_mode?: string | null;
+  description?: string | null;
+  photo_uri?: string | null;
+  gps_lat?: number | null;
+  gps_long?: number | null;
+  created_at_local: string;
+  synced?: number;
+}
+
+export const EasyReceiptStore = {
+  insert: async (r: EasyReceipt) => {
+    await db.runAsync(
+      `INSERT OR IGNORE INTO easy_receipts
+        (uuid, customer_name, customer_phone, amount, payment_mode, description,
+         photo_uri, gps_lat, gps_long, created_at_local)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        r.uuid,
+        r.customer_name,
+        r.customer_phone ?? null,
+        r.amount,
+        r.payment_mode ?? null,
+        r.description ?? null,
+        r.photo_uri ?? null,
+        r.gps_lat ?? null,
+        r.gps_long ?? null,
+        r.created_at_local,
+      ]
+    );
+  },
+
+  count: async (): Promise<number> => {
+    const row = await db.getFirstAsync<{ n: number }>(
+      'SELECT COUNT(*) as n FROM easy_receipts'
+    );
+    return row?.n ?? 0;
+  },
+
+  getAll: async (): Promise<EasyReceipt[]> => {
+    return db.getAllAsync<EasyReceipt>(
+      'SELECT * FROM easy_receipts ORDER BY created_at_local DESC'
+    );
+  },
+
+  getPending: async (): Promise<EasyReceipt[]> => {
+    return db.getAllAsync<EasyReceipt>(
+      'SELECT * FROM easy_receipts WHERE synced = 0 ORDER BY created_at_local ASC'
+    );
+  },
+
+  markSynced: async (uuids: string[]) => {
+    if (uuids.length === 0) return;
+    const placeholders = uuids.map(() => '?').join(',');
+    await db.runAsync(
+      `UPDATE easy_receipts SET synced = 1 WHERE uuid IN (${placeholders})`,
+      uuids
+    );
   },
 };

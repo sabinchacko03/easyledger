@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -13,10 +14,12 @@ import {
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { AuthStorage, type AuthUser } from '@/lib/auth-store';
+import { syncEasyReceipts } from '@/lib/sync';
 
 export default function LoginScreen() {
   const { t } = useTranslation();
-  const { setUser } = useAuth();
+  const { setAuthState } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,7 +36,9 @@ export default function LoginScreen() {
         password,
       });
       await AuthStorage.saveAuth(res.token, res.user);
-      setUser(res.user); // triggers root layout redirect
+      setAuthState({ mode: 'full', token: res.token, user: res.user });
+      // Sync any easy-mode receipts created before account activation
+      syncEasyReceipts();
     } catch (e: any) {
       setError(e.message ?? t('login.error'));
     } finally {
@@ -83,7 +88,7 @@ export default function LoginScreen() {
           </View>
 
           {error ? (
-            <Text className="text-danger text-sm text-center">{error}</Text>
+            <Text className="text-red-500 text-sm text-center">{error}</Text>
           ) : null}
 
           <TouchableOpacity
@@ -98,6 +103,22 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
         </View>
+
+        {/* Divider */}
+        <View className="flex-row items-center my-6">
+          <View className="flex-1 h-px bg-gray-200" />
+          <Text className="mx-4 text-gray-400 text-sm">or</Text>
+          <View className="flex-1 h-px bg-gray-200" />
+        </View>
+
+        {/* Easy mode signup */}
+        <TouchableOpacity
+          className="border border-primary rounded-xl py-4 items-center"
+          onPress={() => router.push('/(auth)/easy-signup')}
+        >
+          <Text className="text-primary font-semibold text-base">{t('login.getStarted')}</Text>
+          <Text className="text-gray-400 text-xs mt-1">{t('login.getStartedSub')}</Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );

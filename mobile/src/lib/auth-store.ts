@@ -4,29 +4,63 @@ export interface AuthUser {
   id: number;
   name: string;
   email: string;
-  role: 'admin' | 'salesperson';
+  role: 'admin' | 'salesperson' | 'super_admin';
   tenant_id: number | null;
+  is_super_admin?: boolean;
 }
 
-const TOKEN_KEY = 'auth_token';
-const USER_KEY = 'auth_user';
+export interface EasyProfile {
+  name: string;
+  company_name: string;
+  company_address: string;
+  trn: string; // 15 digits
+  tin: string; // 10 digits
+}
+
+export type AppAuthState =
+  | { mode: 'full'; token: string; user: AuthUser }
+  | { mode: 'easy'; profile: EasyProfile }
+  | null;
+
+const STATE_KEY = 'app_auth_state';
 
 export const AuthStorage = {
-  saveAuth: async (token: string, user: AuthUser) => {
-    await AsyncStorage.multiSet([
-      [TOKEN_KEY, token],
-      [USER_KEY, JSON.stringify(user)],
-    ]);
+  save: async (state: AppAuthState): Promise<void> => {
+    if (state === null) {
+      await AsyncStorage.removeItem(STATE_KEY);
+    } else {
+      await AsyncStorage.setItem(STATE_KEY, JSON.stringify(state));
+    }
   },
 
-  getToken: () => AsyncStorage.getItem(TOKEN_KEY),
-
-  getUser: async (): Promise<AuthUser | null> => {
-    const raw = await AsyncStorage.getItem(USER_KEY);
+  load: async (): Promise<AppAuthState> => {
+    const raw = await AsyncStorage.getItem(STATE_KEY);
     return raw ? JSON.parse(raw) : null;
   },
 
-  clearAuth: async () => {
-    await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
+  getToken: async (): Promise<string | null> => {
+    const raw = await AsyncStorage.getItem(STATE_KEY);
+    if (!raw) return null;
+    const state: AppAuthState = JSON.parse(raw);
+    return state?.mode === 'full' ? state.token : null;
+  },
+
+  clear: async (): Promise<void> => {
+    await AsyncStorage.removeItem(STATE_KEY);
+  },
+
+  // Convenience helpers for full-mode login
+  saveAuth: async (token: string, user: AuthUser): Promise<void> => {
+    await AuthStorage.save({ mode: 'full', token, user });
+  },
+
+  clearAuth: async (): Promise<void> => {
+    await AuthStorage.clear();
+  },
+
+  // Legacy compat used internally by api.ts
+  getUser: async (): Promise<AuthUser | null> => {
+    const state = await AuthStorage.load();
+    return state?.mode === 'full' ? state.user : null;
   },
 };

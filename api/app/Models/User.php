@@ -24,6 +24,7 @@ class User extends Authenticatable
         'tenant_id',
         'role',
         'is_active',
+        'is_super_admin',
     ];
 
     protected $hidden = [
@@ -37,7 +38,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'is_super_admin' => 'boolean',
         ];
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return (bool) $this->is_super_admin;
     }
 
     public function tenant(): BelongsTo

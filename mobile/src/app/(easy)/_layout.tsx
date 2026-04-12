@@ -3,12 +3,11 @@ import React from 'react';
 import { Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-
 function TabIcon({ emoji, active }: { emoji: string; active: boolean }) {
   return <Text style={{ fontSize: 18, opacity: active ? 1 : 0.45 }}>{emoji}</Text>;
 }
 
-export default function AppLayout() {
+export default function EasyLayout() {
   const insets = useSafeAreaInsets();
 
   return (
@@ -33,18 +32,10 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="customers"
-        options={{
-          title: 'Customers',
-          tabBarLabel: 'Customers',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="👥" active={focused} />,
-        }}
-      />
-      <Tabs.Screen
         name="history"
         options={{
-          title: 'History',
-          tabBarLabel: 'History',
+          title: 'Receipts',
+          tabBarLabel: 'Receipts',
           tabBarIcon: ({ focused }) => <TabIcon emoji="📋" active={focused} />,
         }}
       />
@@ -56,9 +47,9 @@ export default function AppLayout() {
           tabBarIcon: ({ focused }) => <TabIcon emoji="👤" active={focused} />,
         }}
       />
-      {/* Modal screens — hidden from tab bar */}
+      {/* Hidden modal screens */}
       <Tabs.Screen name="new-receipt" options={{ href: null }} />
-      <Tabs.Screen name="credit-note" options={{ href: null }} />
+      <Tabs.Screen name="upgrade" options={{ href: null }} />
     </Tabs>
   );
 }

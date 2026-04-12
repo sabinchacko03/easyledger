@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 
-import { useAuth } from '@/lib/auth-context';
+import { useAuth, useFullUser } from '@/lib/auth-context';
 import { AuthStorage } from '@/lib/auth-store';
 import { api } from '@/lib/api';
 import { DraftStore } from '@/lib/db';
@@ -24,7 +24,8 @@ interface DailyStat {
 }
 
 export default function ProfileScreen() {
-  const { user, setUser } = useAuth();
+  const { setAuthState } = useAuth();
+  const user = useFullUser();
   const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
   const [pendingCount, setPendingCount] = useState<number | null>(null);
@@ -74,7 +75,7 @@ export default function ProfileScreen() {
         style: 'destructive',
         onPress: async () => {
           await AuthStorage.clearAuth();
-          setUser(null);
+          setAuthState(null);
         },
       },
     ]);

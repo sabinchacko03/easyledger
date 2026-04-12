@@ -1,20 +1,16 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import { AuthStorage } from './auth-store';
 
 const BASE_URL =
   typeof document !== 'undefined'
     ? (process.env.EXPO_PUBLIC_WEB_API_URL ?? 'http://localhost/api')
     : (process.env.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2/api'); // 10.0.2.2 = host from Android emulator
 
-async function getToken(): Promise<string | null> {
-  return AsyncStorage.getItem('auth_token');
-}
-
 async function request<T>(
   path: string,
   options: RequestInit & { isForm?: boolean } = {}
 ): Promise<T> {
-  const token = await getToken();
+  const token = await AuthStorage.getToken();
   const { isForm, ...fetchOptions } = options;
 
   const headers: Record<string, string> = {
@@ -30,7 +26,7 @@ async function request<T>(
   const res = await fetch(`${BASE_URL}${path}`, { ...fetchOptions, headers });
 
   if (res.status === 401) {
-    await AsyncStorage.multiRemove(['auth_token', 'auth_user']);
+    await AuthStorage.clear();
     router.replace('/(auth)/login');
     throw new Error('Session expired. Please log in again.');
   }
