@@ -53,7 +53,7 @@ export default function AppLayout({ children, title }) {
                 {/* Logo */}
                 <div className="flex h-16 items-center gap-2 px-6">
                     <Receipt className="h-6 w-6 text-sidebar-primary" />
-                    <span className="text-lg font-semibold text-sidebar-foreground">Receipt App</span>
+                    <span className="text-lg font-semibold text-sidebar-foreground">EasyLedger</span>
                 </div>
 
                 <Separator className="bg-sidebar-border" />

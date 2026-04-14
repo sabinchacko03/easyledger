@@ -49,7 +49,7 @@ export default function ProfileScreen() {
   async function handleSync() {
     setSyncing(true);
     try {
-      await syncPendingDrafts();
+      await syncPendingDrafts(true);
       const drafts = await DraftStore.getPending();
       setPendingCount(drafts.length);
       await queryClient.invalidateQueries({ queryKey: ['documents-list'] });

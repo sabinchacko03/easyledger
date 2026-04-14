@@ -4,11 +4,13 @@ import { DraftStore, EasyReceiptStore } from './db';
 
 let isSyncing = false;
 
-export async function syncPendingDrafts(): Promise<void> {
+export async function syncPendingDrafts(force = false): Promise<void> {
   if (isSyncing) return;
 
-  const state = await NetInfo.fetch();
-  if (!state.isConnected) return;
+  if (!force) {
+    const state = await NetInfo.fetch();
+    if (!state.isConnected) return;
+  }
 
   const pending = await DraftStore.getPending();
   if (pending.length === 0) return;
@@ -22,8 +24,8 @@ export async function syncPendingDrafts(): Promise<void> {
 
     const syncedUuids = [...(response.synced ?? []), ...(response.skipped ?? [])];
     await DraftStore.markSynced(syncedUuids);
-  } catch {
-    // Silently retry on next sync trigger
+  } catch (e) {
+    console.warn('[sync] syncPendingDrafts failed:', e);
   } finally {
     isSyncing = false;
   }

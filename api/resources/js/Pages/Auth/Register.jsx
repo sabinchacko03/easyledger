@@ -45,7 +45,7 @@ export default function Register() {
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary">
                             <Receipt className="h-6 w-6 text-primary-foreground" />
                         </div>
-                        <h2 className="text-xl font-semibold">Receipt App</h2>
+                        <h2 className="text-xl font-semibold">EasyLedger</h2>
                         <p className="text-sm text-muted-foreground">Create your supplier account</p>
                     </div>
 
