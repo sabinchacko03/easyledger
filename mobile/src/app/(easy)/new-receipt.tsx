@@ -23,7 +23,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { api } from '@/lib/api';
 import { EasyReceiptStore } from '@/lib/db';
 
-const PAYMENT_MODES = ['Cash', 'Cheque', 'Bank Transfer', 'Credit'];
+const PAYMENT_MODES = ['Cash', 'Cheque', 'Bank Transfer'];
 const DEFAULT_LIMIT = 50;
 
 export default function EasyNewReceiptScreen() {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Activated — ReceiptApp</title>
+    <title>Account Activated — {{ config('app.name') }}</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; min-height: 100vh;
                display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -22,11 +22,11 @@
         <div class="icon">🎉</div>
         <h1>Your account is ready!</h1>
         <p>
-            Welcome to ReceiptApp, <strong>{{ $invitation->name }}</strong>.<br>
+            Welcome to {{ config('app.name') }}, <strong>{{ $invitation->name }}</strong>.<br>
             Your company <strong>{{ $invitation->company_name }}</strong> is now active.
         </p>
         <div class="note">
-            Open the ReceiptApp mobile app and sign in with<br>
+            Open the {{ config('app.name') }} mobile app and sign in with<br>
             <span class="email">{{ $invitation->email }}</span><br>
             using the password you just set.
             <br><br>

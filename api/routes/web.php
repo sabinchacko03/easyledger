@@ -6,6 +6,8 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\DocumentController;
 use App\Http\Controllers\Web\InviteRegistrationController;
 use App\Http\Controllers\Web\SalespersonController;
+use App\Http\Controllers\Web\SuperAdminController;
+use App\Http\Controllers\Web\TenantController;
 use Illuminate\Support\Facades\Route;
 
 // Invite registration (token-gated, no session required)
@@ -46,4 +48,20 @@ Route::middleware(['auth', 'role:admin,web'])->group(function () {
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
     Route::get('/documents/{document}/pdf', [DocumentController::class, 'pdf'])->name('documents.pdf');
+
+    // Company settings
+    Route::get('/settings', [TenantController::class, 'edit'])->name('settings.edit');
+    Route::post('/settings', [TenantController::class, 'update'])->name('settings.update');
+    Route::delete('/settings/logo', [TenantController::class, 'deleteLogo'])->name('settings.logo.delete');
+});
+
+// Super admin portal
+Route::middleware(['auth', 'super.admin'])->prefix('super')->name('super.')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/',             [SuperAdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/settings',     [SuperAdminController::class, 'settings'])->name('settings');
+    Route::put('/settings/{key}', [SuperAdminController::class, 'updateSetting'])->name('settings.update');
+    Route::get('/invitations',  [SuperAdminController::class, 'invitations'])->name('invitations');
+    Route::post('/invitations/{invitation}/resend', [SuperAdminController::class, 'resendInvitation'])->name('invitations.resend');
+    Route::get('/tenants',      [SuperAdminController::class, 'tenants'])->name('tenants');
 });

@@ -32,6 +32,7 @@ export default function UpgradeScreen() {
   const [statusMsg, setStatusMsg] = useState('');
   const [ready, setReady] = useState(false);
   const [error, setError] = useState('');
+  const [resending, setResending] = useState(false);
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -96,6 +97,20 @@ export default function UpgradeScreen() {
     }
   }
 
+  async function handleResend() {
+    if (!profile?.trn) return;
+    setResending(true);
+    setStatusMsg('');
+    try {
+      await api.post('/easy/resend', { trn: profile.trn });
+      setStatusMsg('Invitation resent! Please check your inbox.');
+    } catch (e: any) {
+      setStatusMsg(e.message ?? 'Failed to resend. Please try again.');
+    } finally {
+      setResending(false);
+    }
+  }
+
   async function handleSignIn() {
     await AuthStorage.clear();
     setAuthState(null);
@@ -137,12 +152,25 @@ export default function UpgradeScreen() {
             <Text className="text-white font-bold text-base">Sign In Now</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            className="bg-white border border-gray-200 rounded-xl py-4 items-center mb-3"
-            onPress={checkStatus}
-          >
-            <Text className="text-gray-700 font-medium">Check Status</Text>
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              className="bg-white border border-gray-200 rounded-xl py-4 items-center mb-3"
+              onPress={checkStatus}
+            >
+              <Text className="text-gray-700 font-medium">Check Status</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={`rounded-xl py-4 items-center mb-3 ${resending ? 'bg-blue-300' : 'bg-primary'}`}
+              onPress={handleResend}
+              disabled={resending}
+            >
+              {resending ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text className="text-white font-semibold text-base">Resend Email</Text>
+              )}
+            </TouchableOpacity>
+          </>
         )}
 
         <TouchableOpacity className="items-center" onPress={() => router.back()}>

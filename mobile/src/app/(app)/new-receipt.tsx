@@ -32,7 +32,7 @@ interface Customer {
   phone?: string;
 }
 
-const PAYMENT_MODES = ['Cash', 'Cheque', 'Bank Transfer', 'Credit'];
+const PAYMENT_MODES = ['Cash', 'Cheque', 'Bank Transfer'];
 
 export default function NewReceiptScreen() {
   const router = useRouter();

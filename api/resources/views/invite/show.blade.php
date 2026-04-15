@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activate your ReceiptApp account</title>
+    <title>Activate your {{ config('app.name') }} account</title>
     <style>
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; min-height: 100vh;
@@ -31,7 +31,7 @@
 </head>
 <body>
     <div class="card">
-        <div class="logo">R ReceiptApp</div>
+        <div class="logo">R {{ config('app.name') }}</div>
         <h1>Activate your account</h1>
         <p class="subtitle">Review your company details below, then set a password to complete registration.</p>
 

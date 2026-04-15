@@ -15,6 +15,7 @@ export interface EasyProfile {
   company_address: string;
   trn: string; // 15 digits
   tin: string; // 10 digits
+  logo_uri?: string;
 }
 
 export type AppAuthState =

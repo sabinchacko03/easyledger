@@ -43,7 +43,8 @@
       "Bash(git -C D:/ReceiptApp/Code submodule status)",
       "Bash(git -C D:/ReceiptApp/Code ls-files --stage mobile)",
       "Bash(ls D:/ReceiptApp/Code/mobile/src/app/\\\\\\(easy\\\\\\)/)",
-      "Bash(ls D:/ReceiptApp/Code/mobile/src/app/\\\\\\(auth\\\\\\)/)"
+      "Bash(ls D:/ReceiptApp/Code/mobile/src/app/\\\\\\(auth\\\\\\)/)",
+      "Bash(xargs cat:*)"
     ]
   }
 }

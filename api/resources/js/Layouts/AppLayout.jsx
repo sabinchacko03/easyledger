@@ -1,5 +1,5 @@
 import { Link, usePage, router } from '@inertiajs/react';
-import { LayoutDashboard, Users, Building2, FileText, LogOut, Receipt, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, FileText, LogOut, Receipt, ChevronRight, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -17,6 +17,7 @@ const navItems = [
     { href: '/salespeople',  label: 'Salespeople', icon: Users },
     { href: '/customers',    label: 'Customers',   icon: Building2 },
     { href: '/documents',    label: 'Documents',   icon: FileText },
+    { href: '/settings',     label: 'Settings',    icon: Settings },
 ];
 
 function NavItem({ href, label, icon: Icon }) {

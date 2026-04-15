@@ -1,0 +1,4 @@
+- add a resend button in the upgrade option from app.
+- in the invitation email and in the activation success, the app name is shown as 'ReceiptApp' i dont know where it comes from, but take the app name from .env. or let me know any other configurations there
+- Logo is still not visible in the recepit in both web and phone.
+- in the tenant portal there are no options to modify the company details including logo.

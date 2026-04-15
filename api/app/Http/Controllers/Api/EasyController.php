@@ -66,6 +66,36 @@ class EasyController extends Controller
     }
 
     /**
+     * POST /api/easy/resend
+     * Resends the invitation email for a pending/expired invitation.
+     */
+    public function resend(Request $request): JsonResponse
+    {
+        $request->validate([
+            'trn' => ['required', 'string'],
+        ]);
+
+        $invitation = EasyInvitation::where('trn', $request->trn)
+            ->whereIn('status', ['pending', 'expired'])
+            ->latest()
+            ->first();
+
+        if (! $invitation) {
+            return response()->json(['message' => 'No pending invitation found. Please submit your email again.'], 404);
+        }
+
+        $invitation->update([
+            'token'            => Str::random(48),
+            'token_expires_at' => now()->addDays(7),
+            'status'           => 'pending',
+        ]);
+
+        SendInvitationEmail::dispatch($invitation)->onQueue('emails');
+
+        return response()->json(['message' => 'Invitation resent successfully.']);
+    }
+
+    /**
      * GET /api/easy/status?trn={trn}
      * Polled by mobile to check if tenant registration has completed.
      */

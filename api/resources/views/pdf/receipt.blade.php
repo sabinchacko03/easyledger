@@ -87,6 +87,9 @@
     <table class="two-col">
       <tr>
         <td width="50%">
+          @if(!empty($logoDataUri))
+            <img src="{{ $logoDataUri }}" style="height:50px;max-width:180px;object-fit:contain;margin-bottom:6px;display:block;" />
+          @endif
           <div class="company-name">{{ $tenant->name }}</div>
           <div class="company-meta">
             @if($tenant->trn)

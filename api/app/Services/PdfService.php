@@ -16,12 +16,15 @@ class PdfService
         // Pre-process Arabic text for correct glyph shaping
         $arText = $this->reshapeArabic($document->amount_words_ar ?? '');
 
+        $logoDataUri = $this->tenantLogoDataUri($document->tenant->logo ?? null);
+
         $pdf = Pdf::loadView('pdf.receipt', [
-            'document'    => $document,
-            'tenant'      => $document->tenant,
-            'customer'    => $document->customer,
-            'salesperson' => $document->salesperson,
-            'arText'      => $arText,
+            'document'     => $document,
+            'tenant'       => $document->tenant,
+            'customer'     => $document->customer,
+            'salesperson'  => $document->salesperson,
+            'arText'       => $arText,
+            'logoDataUri'  => $logoDataUri,
         ]);
 
         $pdf->setPaper('A4', 'portrait');
@@ -38,6 +41,28 @@ class PdfService
         $document->updateQuietly(['pdf_path' => $path]);
 
         return $path;
+    }
+
+    /**
+     * Convert a stored logo path to an inline base64 data URI.
+     * DomPDF has isRemoteEnabled=false so external/local URLs don't load —
+     * embedding as base64 is the only reliable approach.
+     */
+    private function tenantLogoDataUri(?string $logoPath): ?string
+    {
+        if (! $logoPath) return null;
+
+        try {
+            $fullPath = Storage::path($logoPath);
+            if (! file_exists($fullPath)) return null;
+
+            $data     = base64_encode(file_get_contents($fullPath));
+            $mimeType = mime_content_type($fullPath) ?: 'image/jpeg';
+
+            return "data:{$mimeType};base64,{$data}";
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**

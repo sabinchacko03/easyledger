@@ -21,6 +21,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::prefix('easy')->group(function () {
     Route::get('/config', [EasyController::class, 'config']);
     Route::post('/invite', [EasyController::class, 'invite']);
+    Route::post('/resend', [EasyController::class, 'resend']);
     Route::get('/status', [EasyController::class, 'status']);
 });
 

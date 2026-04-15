@@ -1,6 +1,7 @@
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAuth, useEasyProfile } from '@/lib/auth-context';
@@ -25,6 +26,25 @@ export default function EasyProfileScreen() {
       .then((r) => setLimit(r.max_free_receipts))
       .catch(() => {});
   }, []);
+
+  async function handlePickLogo() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('Permission needed', 'Gallery access is required to upload a logo.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (result.canceled || !result.assets[0]) return;
+    const logo_uri = result.assets[0].uri;
+    const updated = { ...profile!, logo_uri };
+    await AuthStorage.save({ mode: 'easy', profile: updated });
+    setAuthState({ mode: 'easy', profile: updated });
+  }
 
   async function handleSignOut() {
     Alert.alert(
@@ -54,11 +74,25 @@ export default function EasyProfileScreen() {
     >
       {/* Profile card */}
       <View className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-5">
-        <View className="w-14 h-14 rounded-2xl bg-primary items-center justify-center mb-3">
-          <Text className="text-white text-2xl font-bold">
-            {profile?.name?.charAt(0).toUpperCase() ?? '?'}
-          </Text>
-        </View>
+        <TouchableOpacity onPress={handlePickLogo} className="mb-3 self-start">
+          {profile?.logo_uri ? (
+            <View>
+              <Image
+                source={{ uri: profile.logo_uri }}
+                className="w-16 h-16 rounded-2xl"
+                resizeMode="cover"
+              />
+              <Text className="text-xs text-primary mt-1">Change logo</Text>
+            </View>
+          ) : (
+            <View className="w-16 h-16 rounded-2xl bg-primary items-center justify-center">
+              <Text className="text-white text-2xl font-bold">
+                {profile?.name?.charAt(0).toUpperCase() ?? '?'}
+              </Text>
+              <Text className="text-white text-xs mt-0.5">+ Logo</Text>
+            </View>
+          )}
+        </TouchableOpacity>
         <Text className="text-lg font-bold text-gray-900">{profile?.name}</Text>
         <Text className="text-sm text-gray-500 mt-0.5">{profile?.company_name}</Text>
         <View className="mt-2 self-start bg-blue-100 px-2 py-0.5 rounded-full">
