@@ -14,6 +14,7 @@ export async function initDb() {
       parent_id    INTEGER,
       amount       REAL    NOT NULL,
       payment_mode TEXT,
+      cheque_details TEXT,
       description  TEXT,
       gps_lat      REAL,
       gps_long     REAL,
@@ -40,6 +41,8 @@ export async function initDb() {
       customer_phone   TEXT,
       amount           REAL    NOT NULL,
       payment_mode     TEXT,
+      cheque_details   TEXT,
+      transfer_screenshot_uri TEXT,
       description      TEXT,
       photo_uri        TEXT,
       gps_lat          REAL,
@@ -48,6 +51,20 @@ export async function initDb() {
       synced           INTEGER NOT NULL DEFAULT 0
     );
   `);
+
+  // Migrations for existing databases
+  const migrations = [
+    'ALTER TABLE offline_drafts ADD COLUMN cheque_details TEXT',
+    'ALTER TABLE easy_receipts ADD COLUMN cheque_details TEXT',
+    'ALTER TABLE easy_receipts ADD COLUMN transfer_screenshot_uri TEXT',
+  ];
+  for (const sql of migrations) {
+    try {
+      await db.execAsync(sql);
+    } catch {
+      // Column already exists — safe to ignore
+    }
+  }
 }
 
 // ─── Offline drafts (full mode) ────────────────────────────────────────────
@@ -59,6 +76,7 @@ export interface OfflineDraft {
   parent_id?: number | null;
   amount: number;
   payment_mode?: string | null;
+  cheque_details?: string | null;
   description?: string | null;
   gps_lat?: number | null;
   gps_long?: number | null;
@@ -69,8 +87,8 @@ export const DraftStore = {
   insert: async (draft: OfflineDraft) => {
     await db.runAsync(
       `INSERT OR IGNORE INTO offline_drafts
-        (uuid, customer_id, type, parent_id, amount, payment_mode, description, gps_lat, gps_long, created_at_local)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (uuid, customer_id, type, parent_id, amount, payment_mode, cheque_details, description, gps_lat, gps_long, created_at_local)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         draft.uuid,
         draft.customer_id,
@@ -78,6 +96,7 @@ export const DraftStore = {
         draft.parent_id ?? null,
         draft.amount,
         draft.payment_mode ?? null,
+        draft.cheque_details ?? null,
         draft.description ?? null,
         draft.gps_lat ?? null,
         draft.gps_long ?? null,
@@ -134,6 +153,8 @@ export interface EasyReceipt {
   customer_phone?: string | null;
   amount: number;
   payment_mode?: string | null;
+  cheque_details?: string | null;
+  transfer_screenshot_uri?: string | null;
   description?: string | null;
   photo_uri?: string | null;
   gps_lat?: number | null;
@@ -146,15 +167,17 @@ export const EasyReceiptStore = {
   insert: async (r: EasyReceipt) => {
     await db.runAsync(
       `INSERT OR IGNORE INTO easy_receipts
-        (uuid, customer_name, customer_phone, amount, payment_mode, description,
-         photo_uri, gps_lat, gps_long, created_at_local)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (uuid, customer_name, customer_phone, amount, payment_mode, cheque_details,
+         transfer_screenshot_uri, description, photo_uri, gps_lat, gps_long, created_at_local)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         r.uuid,
         r.customer_name,
         r.customer_phone ?? null,
         r.amount,
         r.payment_mode ?? null,
+        r.cheque_details ?? null,
+        r.transfer_screenshot_uri ?? null,
         r.description ?? null,
         r.photo_uri ?? null,
         r.gps_lat ?? null,
