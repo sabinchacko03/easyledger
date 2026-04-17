@@ -24,6 +24,7 @@ export type AppAuthState =
   | null;
 
 const STATE_KEY = 'app_auth_state';
+const PENDING_SYNC_TRN_KEY = 'pending_sync_trn';
 
 export const AuthStorage = {
   save: async (state: AppAuthState): Promise<void> => {
@@ -57,6 +58,19 @@ export const AuthStorage = {
 
   clearAuth: async (): Promise<void> => {
     await AuthStorage.clear();
+  },
+
+  // Stores the easy-mode TRN before clearing auth so syncEasyReceipts knows which receipts to send
+  savePendingSyncTrn: async (trn: string): Promise<void> => {
+    await AsyncStorage.setItem(PENDING_SYNC_TRN_KEY, trn);
+  },
+
+  getPendingSyncTrn: async (): Promise<string | null> => {
+    return AsyncStorage.getItem(PENDING_SYNC_TRN_KEY);
+  },
+
+  clearPendingSyncTrn: async (): Promise<void> => {
+    await AsyncStorage.removeItem(PENDING_SYNC_TRN_KEY);
   },
 
   // Legacy compat used internally by api.ts

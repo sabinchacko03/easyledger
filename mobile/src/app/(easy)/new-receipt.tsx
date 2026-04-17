@@ -21,6 +21,7 @@ import 'react-native-get-random-values';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useEasyProfile } from '@/lib/auth-context';
 import { api } from '@/lib/api';
 import { EasyReceiptStore } from '@/lib/db';
 
@@ -35,6 +36,7 @@ const DEFAULT_LIMIT = 50;
 export default function EasyNewReceiptScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const profile = useEasyProfile();
 
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -46,6 +48,7 @@ export default function EasyNewReceiptScreen() {
   const [cameraMode, setCameraMode] = useState<'evidence' | 'transfer'>('evidence');
   const [submitting, setSubmitting] = useState(false);
   const [limit, setLimit] = useState(DEFAULT_LIMIT);
+  const [maxCheques, setMaxCheques] = useState(5);
 
   // Cheque state
   const [chequeCount, setChequeCount] = useState(1);
@@ -58,8 +61,11 @@ export default function EasyNewReceiptScreen() {
   const cameraRef = useRef<CameraView>(null);
 
   useEffect(() => {
-    api.get<{ max_free_receipts: number }>('/easy/config')
-      .then((r) => setLimit(r.max_free_receipts))
+    api.get<{ max_free_receipts: number; max_cheque_items: number }>('/easy/config')
+      .then((r) => {
+        setLimit(r.max_free_receipts);
+        if (r.max_cheque_items) setMaxCheques(r.max_cheque_items);
+      })
       .catch(() => {});
   }, []);
 
@@ -76,7 +82,7 @@ export default function EasyNewReceiptScreen() {
 
   function adjustChequeCount(delta: number) {
     const next = chequeCount + delta;
-    if (next < 1 || next > 10) return;
+    if (next < 1 || next > maxCheques) return;
     setChequeCount(next);
     if (delta > 0) {
       setCheques((prev) => [...prev, { chequeNo: '', amount: '' }]);
@@ -204,6 +210,7 @@ export default function EasyNewReceiptScreen() {
 
       await EasyReceiptStore.insert({
         uuid: uuidv4(),
+        profile_trn: profile?.trn ?? null,
         customer_name: customerName.trim(),
         customer_phone: customerPhone.trim() || null,
         amount: parsed,
@@ -217,7 +224,7 @@ export default function EasyNewReceiptScreen() {
         created_at_local: new Date().toISOString(),
       });
 
-      const newCount = await EasyReceiptStore.count();
+      const newCount = await EasyReceiptStore.count(profile?.trn ?? '');
 
       if (newCount >= limit) {
         Alert.alert(

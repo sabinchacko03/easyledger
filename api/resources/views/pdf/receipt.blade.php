@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<title>{{ $document->doc_number }}</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -54,6 +55,12 @@
   /* Payment */
   .payment-row { margin-bottom: 16px; }
   .payment-pill { display: inline-block; background: #dcfce7; color: #166534; border-radius: 20px; padding: 4px 14px; font-size: 10px; font-weight: bold; }
+
+  /* Cheque table */
+  .cheque-table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 14px; font-size: 10px; }
+  .cheque-table th { background: #f0f7ff; color: #208AEF; text-align: left; padding: 5px 8px; border: 1px solid #d1e8fd; font-size: 9px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .cheque-table td { padding: 5px 8px; border: 1px solid #e5e7eb; }
+  .cheque-table tr:nth-child(even) td { background: #fafafa; }
 
   /* Badges */
   .badge-draft   { display: inline-block; background: #fef3c7; color: #92400e; border-radius: 3px; padding: 2px 8px; font-size: 9px; }
@@ -213,6 +220,28 @@
       <strong style="font-size:9px;">Payment Mode:</strong>&nbsp;
       <span class="payment-pill">{{ $document->payment_mode }}</span>
     </div>
+  @endif
+
+  {{-- CHEQUE DETAILS --}}
+  @if($document->payment_mode === 'Cheque' && !empty($document->cheque_details))
+    <table class="cheque-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cheque No.</th>
+          <th style="text-align:right;">Amount (AED)</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($document->cheque_details as $i => $cheque)
+          <tr>
+            <td>{{ $i + 1 }}</td>
+            <td>{{ $cheque['chequeNo'] ?: '—' }}</td>
+            <td style="text-align:right;">{{ number_format((float)($cheque['amount'] ?? 0), 2) }}</td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
   @endif
 
   {{-- SALESPERSON --}}

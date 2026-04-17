@@ -4,7 +4,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   ActivityIndicator,
@@ -56,6 +56,7 @@ export default function NewReceiptScreen() {
   const [submitting, setSubmitting] = useState(false);
 
   // Cheque state
+  const [maxCheques, setMaxCheques] = useState(5);
   const [chequeCount, setChequeCount] = useState(1);
   const [cheques, setCheques] = useState<ChequeItem[]>([{ chequeNo: '', amount: '' }]);
 
@@ -65,6 +66,12 @@ export default function NewReceiptScreen() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    api.get<{ max_free_receipts: number; max_cheque_items: number }>('/easy/config')
+      .then((r) => { if (r.max_cheque_items) setMaxCheques(r.max_cheque_items); })
+      .catch(() => {});
+  }, []);
 
   const { data: allCustomers = [] } = useQuery<Customer[]>({
     queryKey: ['customers'],
@@ -109,7 +116,7 @@ export default function NewReceiptScreen() {
 
   function adjustChequeCount(delta: number) {
     const next = chequeCount + delta;
-    if (next < 1 || next > 10) return;
+    if (next < 1 || next > maxCheques) return;
     setChequeCount(next);
     if (delta > 0) {
       setCheques((prev) => [...prev, { chequeNo: '', amount: '' }]);

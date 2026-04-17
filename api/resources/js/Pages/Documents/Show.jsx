@@ -94,6 +94,33 @@ export default function ShowDocument({ document }) {
                     )}
                 </Card>
 
+                {/* Cheque Details */}
+                {document.payment_mode === 'Cheque' && Array.isArray(document.cheque_details) && document.cheque_details.length > 0 && (
+                    <Card>
+                        <CardHeader><CardTitle className="text-base">Cheque Details</CardTitle></CardHeader>
+                        <CardContent>
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b text-xs text-muted-foreground uppercase tracking-wide">
+                                        <th className="text-left py-2 pr-4">#</th>
+                                        <th className="text-left py-2 pr-4">Cheque No.</th>
+                                        <th className="text-right py-2">Amount (AED)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {document.cheque_details.map((c, i) => (
+                                        <tr key={i} className="border-b last:border-0">
+                                            <td className="py-2 pr-4 text-muted-foreground">{i + 1}</td>
+                                            <td className="py-2 pr-4 font-mono">{c.chequeNo || '—'}</td>
+                                            <td className="py-2 text-right font-medium">{Number(c.amount || 0).toLocaleString('en-AE', { minimumFractionDigits: 2 })}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Location / Evidence */}
                 {(document.gps_lat || document.evidence_image_path) && (
                     <Card>

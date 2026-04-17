@@ -24,6 +24,7 @@ class Document extends Model
         'currency',
         'description',
         'payment_mode',
+        'cheque_details',
         'evidence_image_path',
         'gps_lat',
         'gps_long',
@@ -40,6 +41,7 @@ class Document extends Model
             'amount' => 'decimal:2',
             'gps_lat' => 'decimal:7',
             'gps_long' => 'decimal:7',
+            'cheque_details' => 'array',
         ];
     }
 

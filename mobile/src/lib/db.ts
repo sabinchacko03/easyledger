@@ -37,6 +37,7 @@ export async function initDb() {
     CREATE TABLE IF NOT EXISTS easy_receipts (
       id               INTEGER PRIMARY KEY AUTOINCREMENT,
       uuid             TEXT    NOT NULL UNIQUE,
+      profile_trn      TEXT,
       customer_name    TEXT    NOT NULL,
       customer_phone   TEXT,
       amount           REAL    NOT NULL,
@@ -57,6 +58,7 @@ export async function initDb() {
     'ALTER TABLE offline_drafts ADD COLUMN cheque_details TEXT',
     'ALTER TABLE easy_receipts ADD COLUMN cheque_details TEXT',
     'ALTER TABLE easy_receipts ADD COLUMN transfer_screenshot_uri TEXT',
+    'ALTER TABLE easy_receipts ADD COLUMN profile_trn TEXT',
   ];
   for (const sql of migrations) {
     try {
@@ -149,6 +151,7 @@ export const CustomerCache = {
 
 export interface EasyReceipt {
   uuid: string;
+  profile_trn?: string | null;
   customer_name: string;
   customer_phone?: string | null;
   amount: number;
@@ -167,11 +170,12 @@ export const EasyReceiptStore = {
   insert: async (r: EasyReceipt) => {
     await db.runAsync(
       `INSERT OR IGNORE INTO easy_receipts
-        (uuid, customer_name, customer_phone, amount, payment_mode, cheque_details,
+        (uuid, profile_trn, customer_name, customer_phone, amount, payment_mode, cheque_details,
          transfer_screenshot_uri, description, photo_uri, gps_lat, gps_long, created_at_local)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         r.uuid,
+        r.profile_trn ?? null,
         r.customer_name,
         r.customer_phone ?? null,
         r.amount,
@@ -187,22 +191,25 @@ export const EasyReceiptStore = {
     );
   },
 
-  count: async (): Promise<number> => {
+  count: async (trn: string): Promise<number> => {
     const row = await db.getFirstAsync<{ n: number }>(
-      'SELECT COUNT(*) as n FROM easy_receipts'
+      'SELECT COUNT(*) as n FROM easy_receipts WHERE profile_trn = ?',
+      [trn]
     );
     return row?.n ?? 0;
   },
 
-  getAll: async (): Promise<EasyReceipt[]> => {
+  getAll: async (trn: string): Promise<EasyReceipt[]> => {
     return db.getAllAsync<EasyReceipt>(
-      'SELECT * FROM easy_receipts ORDER BY created_at_local DESC'
+      'SELECT * FROM easy_receipts WHERE profile_trn = ? ORDER BY created_at_local DESC',
+      [trn]
     );
   },
 
-  getPending: async (): Promise<EasyReceipt[]> => {
+  getPending: async (trn: string): Promise<EasyReceipt[]> => {
     return db.getAllAsync<EasyReceipt>(
-      'SELECT * FROM easy_receipts WHERE synced = 0 ORDER BY created_at_local ASC'
+      'SELECT * FROM easy_receipts WHERE profile_trn = ? AND synced = 0 ORDER BY created_at_local ASC',
+      [trn]
     );
   },
 

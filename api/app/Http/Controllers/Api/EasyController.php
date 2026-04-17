@@ -30,6 +30,7 @@ class EasyController extends Controller
     {
         return response()->json([
             'max_free_receipts' => AppSetting::get('max_free_receipts', 50),
+            'max_cheque_items'  => AppSetting::get('max_cheque_items', 5),
         ]);
     }
 
@@ -142,6 +143,7 @@ class EasyController extends Controller
             'receipts.*.customer_phone'     => ['nullable', 'string', 'max:50'],
             'receipts.*.amount'             => ['required', 'numeric', 'min:0.01'],
             'receipts.*.payment_mode'       => ['nullable', 'in:Cash,Cheque,Bank Transfer,Credit'],
+            'receipts.*.cheque_details'     => ['nullable', 'string'],
             'receipts.*.description'        => ['nullable', 'string'],
             'receipts.*.gps_lat'            => ['nullable', 'numeric'],
             'receipts.*.gps_long'           => ['nullable', 'numeric'],
@@ -184,6 +186,7 @@ class EasyController extends Controller
                 'currency'        => 'AED',
                 'description'     => $receipt['description'] ?? null,
                 'payment_mode'    => $receipt['payment_mode'] ?? null,
+                'cheque_details'  => isset($receipt['cheque_details']) ? json_decode($receipt['cheque_details'], true) : null,
                 'gps_lat'         => $receipt['gps_lat'] ?? null,
                 'gps_long'        => $receipt['gps_long'] ?? null,
                 'amount_words_en' => $this->tafqeetService->toEnglish($receipt['amount']),

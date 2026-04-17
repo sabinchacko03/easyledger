@@ -18,7 +18,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">R</div>
+        <div class="logo">{{ config('app.name') }}</div>
         <h1>You're almost there, {{ $invitation->name }}!</h1>
         <p>
             Your company <span class="company">{{ $invitation->company_name }}</span> has been invited

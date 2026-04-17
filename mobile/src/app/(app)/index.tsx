@@ -1,16 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { api } from '@/lib/api';
 import { useFullUser } from '@/lib/auth-context';
+import { consumeSyncBanner } from '@/lib/sync';
 
 export default function HomeScreen() {
   const user = useFullUser();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const [syncedCount, setSyncedCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    consumeSyncBanner().then((n) => { if (n) setSyncedCount(n); });
+  }, []);
 
   const { data, isLoading } = useQuery<{ data: Array<{ id: number; amount: string; type: string; created_at: string }> }>({
     queryKey: ['documents-summary'],
@@ -28,6 +34,23 @@ export default function HomeScreen() {
       className="flex-1 bg-gray-50"
       contentContainerStyle={{ paddingHorizontal: 16, paddingTop: insets.top + 16, paddingBottom: 96 }}
     >
+      {/* Easy-mode sync banner — shown once after first login */}
+      {syncedCount !== null && (
+        <TouchableOpacity
+          className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-5 flex-row items-center justify-between"
+          onPress={() => setSyncedCount(null)}
+          activeOpacity={0.8}
+        >
+          <View className="flex-1">
+            <Text className="font-semibold text-green-800">Receipts synced</Text>
+            <Text className="text-xs text-green-600 mt-0.5">
+              {syncedCount} receipt{syncedCount !== 1 ? 's' : ''} from easy mode have been added to your account.
+            </Text>
+          </View>
+          <Text className="text-green-400 text-lg ml-3">✓</Text>
+        </TouchableOpacity>
+      )}
+
       {/* Greeting */}
       <Text className="text-2xl font-bold text-gray-900">
         Hello, {user?.name?.split(' ')[0] ?? 'there'} 👋

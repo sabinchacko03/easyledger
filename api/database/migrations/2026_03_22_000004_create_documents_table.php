@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('currency', 3)->default('AED');
             $table->text('description')->nullable();
             $table->enum('payment_mode', ['Cash', 'Cheque', 'Bank Transfer', 'Credit'])->nullable();
+            $table->json('cheque_details')->nullable();
             $table->string('evidence_image_path')->nullable();
             $table->decimal('gps_lat', 10, 7)->nullable();
             $table->decimal('gps_long', 10, 7)->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('amount_words_ar')->nullable();
             $table->enum('status', ['draft', 'synced', 'archived'])->default('draft');
             $table->string('peppol_xml_path')->nullable();
+            $table->string('pdf_path')->nullable();
             $table->timestamps();
 
             // doc_number unique per tenant

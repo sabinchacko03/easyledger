@@ -112,6 +112,9 @@ export default function UpgradeScreen() {
   }
 
   async function handleSignIn() {
+    if (profile?.trn) {
+      await AuthStorage.savePendingSyncTrn(profile.trn);
+    }
     await AuthStorage.clear();
     setAuthState(null);
   }

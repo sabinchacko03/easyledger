@@ -31,6 +31,11 @@ async function logoToBase64(uri: string): Promise<string> {
   }
 }
 
+interface ChequeItem {
+  chequeNo: string;
+  amount: string;
+}
+
 function buildReceiptHtml(params: {
   companyName: string;
   trn?: string;
@@ -40,6 +45,7 @@ function buildReceiptHtml(params: {
   customerPhone?: string | null;
   amount: number;
   paymentMode?: string | null;
+  chequeDetails?: ChequeItem[] | null;
   description?: string | null;
   dateEn: string;
   dateAr: string;
@@ -49,7 +55,7 @@ function buildReceiptHtml(params: {
   const {
     companyName, trn, address, logoDataUri,
     customerName, customerPhone,
-    amount, paymentMode, description,
+    amount, paymentMode, chequeDetails, description,
     dateEn, dateAr, amountWordsEn, amountWordsAr,
   } = params;
 
@@ -88,6 +94,10 @@ function buildReceiptHtml(params: {
   .description-box { border: 1px solid #e5e7eb; border-radius: 3px; padding: 8px 12px; margin-bottom: 14px; color: #333; font-size: 10px; line-height: 1.6; }
   .payment-row { margin-bottom: 16px; }
   .payment-pill { display: inline-block; background: #dcfce7; color: #166534; border-radius: 20px; padding: 4px 14px; font-size: 10px; font-weight: bold; }
+  .cheque-table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 14px; font-size: 10px; }
+  .cheque-table th { background: #f0f7ff; color: #208AEF; text-align: left; padding: 5px 8px; border: 1px solid #d1e8fd; font-size: 9px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .cheque-table td { padding: 5px 8px; border: 1px solid #e5e7eb; }
+  .cheque-table tr:nth-child(even) td { background: #fafafa; }
   .sig-row { margin-top: 24px; border-top: 1px dashed #ccc; padding-top: 14px; }
   .sig-box { text-align: center; }
   .sig-line { border-top: 1px solid #111; margin: 0 10px 4px 10px; }
@@ -183,6 +193,26 @@ function buildReceiptHtml(params: {
     <span class="payment-pill">${paymentMode}</span>
   </div>` : ''}
 
+  <!-- CHEQUE DETAILS -->
+  ${paymentMode === 'Cheque' && chequeDetails && chequeDetails.length > 0 ? `
+  <table class="cheque-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Cheque No.</th>
+        <th style="text-align:right;">Amount (AED)</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${chequeDetails.map((c, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${c.chequeNo || '—'}</td>
+        <td style="text-align:right;">${parseFloat(c.amount || '0').toFixed(2)}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>` : ''}
+
   <!-- SIGNATURES -->
   <div class="sig-row">
     <table class="two-col">
@@ -220,9 +250,10 @@ export default function EasyHistoryScreen() {
   const [sharingUuid, setSharingUuid] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    const all = await EasyReceiptStore.getAll();
+    if (!profile?.trn) return;
+    const all = await EasyReceiptStore.getAll(profile.trn);
     setReceipts(all);
-  }, []);
+  }, [profile?.trn]);
 
   useEffect(() => {
     load();
@@ -251,6 +282,11 @@ export default function EasyHistoryScreen() {
         ? await logoToBase64(profile.logo_uri)
         : undefined;
 
+      let chequeDetails: ChequeItem[] | null = null;
+      if (item.cheque_details) {
+        try { chequeDetails = JSON.parse(item.cheque_details); } catch { /* ignore */ }
+      }
+
       const html = buildReceiptHtml({
         companyName: profile?.company_name ?? '',
         trn: profile?.trn,
@@ -260,6 +296,7 @@ export default function EasyHistoryScreen() {
         customerPhone: item.customer_phone,
         amount: item.amount,
         paymentMode: item.payment_mode,
+        chequeDetails,
         description: item.description,
         dateEn,
         dateAr,

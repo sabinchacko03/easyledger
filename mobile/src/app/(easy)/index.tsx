@@ -18,12 +18,12 @@ export default function EasyHomeScreen() {
   const [limit, setLimit] = useState(DEFAULT_LIMIT);
 
   useEffect(() => {
-    EasyReceiptStore.count().then(setCount);
+    if (profile?.trn) EasyReceiptStore.count(profile.trn).then(setCount);
 
     api.get<{ max_free_receipts: number }>('/easy/config')
       .then((r) => setLimit(r.max_free_receipts))
       .catch(() => {}); // use default on network failure
-  }, []);
+  }, [profile?.trn]);
 
   const remaining = Math.max(0, limit - count);
   const limitReached = count >= limit;

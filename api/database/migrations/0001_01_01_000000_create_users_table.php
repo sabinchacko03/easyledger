@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tenant_id')->nullable();
             $table->enum('role', ['admin', 'salesperson'])->default('admin');
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_super_admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

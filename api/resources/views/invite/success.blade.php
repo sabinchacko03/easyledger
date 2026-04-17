@@ -15,6 +15,11 @@
         .email { font-weight: bold; color: #208AEF; }
         .note { background: #f0f8ff; border-radius: 10px; padding: 16px; margin-top: 24px;
                 font-size: 14px; color: #333; }
+        .login-link { display: inline-block; margin-top: 20px; padding: 12px 28px;
+                      background: #208AEF; color: #fff; border-radius: 8px; text-decoration: none;
+                      font-weight: bold; font-size: 14px; }
+        .login-link:hover { background: #1a75cc; }
+        .login-hint { font-size: 12px; color: #888; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -32,6 +37,8 @@
             <br><br>
             All receipts created in easy mode will be synced to your account automatically on next login.
         </div>
+        <a href="{{ url('/login') }}" class="login-link">Go to Company Dashboard</a>
+        <p class="login-hint">This is the web admin login for {{ $invitation->company_name }}</p>
     </div>
 </body>
 </html>

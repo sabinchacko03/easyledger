@@ -21,11 +21,11 @@ export default function EasyProfileScreen() {
   const [limit, setLimit] = useState(DEFAULT_LIMIT);
 
   useEffect(() => {
-    EasyReceiptStore.count().then(setCount);
+    if (profile?.trn) EasyReceiptStore.count(profile.trn).then(setCount);
     api.get<{ max_free_receipts: number }>('/easy/config')
       .then((r) => setLimit(r.max_free_receipts))
       .catch(() => {});
-  }, []);
+  }, [profile?.trn]);
 
   async function handlePickLogo() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -56,6 +56,9 @@ export default function EasyProfileScreen() {
           text: 'Sign Out',
           style: 'destructive',
           onPress: async () => {
+            if (profile?.trn) {
+              await AuthStorage.savePendingSyncTrn(profile.trn);
+            }
             await AuthStorage.clear();
             setAuthState(null);
           },

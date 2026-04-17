@@ -31,7 +31,7 @@
 </head>
 <body>
     <div class="card">
-        <div class="logo">R {{ config('app.name') }}</div>
+        <div class="logo">{{ config('app.name') }}</div>
         <h1>Activate your account</h1>
         <p class="subtitle">Review your company details below, then set a password to complete registration.</p>
 
